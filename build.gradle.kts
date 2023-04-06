@@ -5,6 +5,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.0"
 	kotlin("jvm") version "1.7.22"
 	kotlin("plugin.spring") version "1.7.22"
+	kotlin("plugin.serialization") version "1.7.22"
 }
 
 group = "com.qp"
@@ -23,10 +24,12 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
-	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 	implementation("com.jillesvangurp:search-client:+")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 //	implementation("com.github.jillesvangurp.kt-search:+")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

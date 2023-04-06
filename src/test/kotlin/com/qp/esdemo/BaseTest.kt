@@ -1,8 +1,6 @@
 package com.qp.esdemo
 
-import com.jillesvangurp.ktsearch.KtorRestClient
-import com.jillesvangurp.ktsearch.SearchClient
-import com.jillesvangurp.ktsearch.search
+import com.jillesvangurp.ktsearch.*
 import com.jillesvangurp.searchdsls.querydsl.bool
 import com.jillesvangurp.searchdsls.querydsl.match
 import com.jillesvangurp.searchdsls.querydsl.term
@@ -18,6 +16,8 @@ class EsBaseTest() {
     private lateinit var elasticsearchTemplate: ElasticsearchTemplate
     @Autowired
     private lateinit var goodsRepository: GoodsRepository
+    @Autowired
+    private lateinit var goodsService: GoodsService
     val client = SearchClient(
         KtorRestClient("127.0.0.1", 9200)
     )
@@ -27,7 +27,10 @@ class EsBaseTest() {
 //        elasticsearchTemplate.i
         // 配置映射，会根据Item类中的id、Field等字段来自动完成映射
 //        elasticsearchTemplate.putMapping(Item.class);
-        println(goodsRepository.save(Goods(title = "我是一个好人", remake = "中国人民站起来了", images = "http://baidu.com/a.jpg")))
+        for (i in 1..10000) {
+            println(goodsRepository.save(Goods(id = i.toLong(), title = "我是一个好人${i}", remake = "中国人民站起来了${i}", images = "http://baidu.com/a.jpg")))
+        }
+//        println(goodsRepository.save(Goods(title = "我是一个好人", remake = "中国人民站起来了", images = "http://baidu.com/a.jpg")))
 
     }
 
@@ -140,6 +143,43 @@ class EsBaseTest() {
             }.let {
                 println(it)
             }
+        }
+    }
+    @Test
+    fun `数据查询_SearchDSL_文本查询_结果处理`(){
+        val q1 = "中国"
+        val q2 = "起来"
+        runBlocking{
+            val resp = client.search("goods") {
+                from = 9700
+                resultSize = 150
+                trackTotalHits = "true"
+                query = bool {
+                    q1?.let {
+                        filter(
+                            term(Goods::remake, "${q1}")
+                        )
+                    }
+                    q2?.let {
+                        filter(
+                            term(Goods::remake, "${q2}")
+                        )
+                    }
+                }
+            }
+            println(resp)
+            val totla = resp.total
+            val rs = resp.parseHits<Goods>().map { it }
+            println("总数为${totla}")
+            println(rs.size)
+            println(rs)
+        }
+    }
+    @Test
+    fun `数据查询_SearchDSL_sevrices`(){
+        runBlocking{
+            val gs =goodsService.search(Goods(title = "中国", remake = "人民"))
+            println(gs)
         }
     }
 }
