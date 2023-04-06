@@ -129,7 +129,7 @@ class EsBaseTest() {
         }
     }
     @Test
-    fun `数据查询_SearchDSL_文本查询`(){
+    fun `数据查询_SearchDSL_文本查询_or`(){
         runBlocking {
             client.search("goods") {
                 query = match(Goods::remake, "中国人 好人"){
