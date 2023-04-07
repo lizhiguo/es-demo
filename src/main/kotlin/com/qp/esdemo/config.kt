@@ -1,14 +1,16 @@
 package com.qp.esdemo
 
-/*
+import com.jillesvangurp.ktsearch.KtorRestClient
+import com.jillesvangurp.ktsearch.SearchClient
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+
 @Configuration
 class ElasticSearchClientConfig {
     @Bean
-    fun restHighLevelClient(): RestHighLevelClient {
-        return RestHighLevelClient(
-            RestClient.builder(
-                HttpHost("localhost", 9200, "http")
-            )
+    fun searchClient(): SearchClient {
+        return SearchClient(
+            KtorRestClient("127.0.0.1", 9200)
         )
     }
-}*/
+}

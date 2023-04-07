@@ -1,6 +1,9 @@
 package com.qp.esdemo
 
-import com.jillesvangurp.ktsearch.*
+import com.jillesvangurp.ktsearch.SearchClient
+import com.jillesvangurp.ktsearch.parseHits
+import com.jillesvangurp.ktsearch.search
+import com.jillesvangurp.ktsearch.total
 import com.jillesvangurp.searchdsls.querydsl.bool
 import com.jillesvangurp.searchdsls.querydsl.match
 import com.jillesvangurp.searchdsls.querydsl.term
@@ -18,9 +21,8 @@ class EsBaseTest() {
     private lateinit var goodsRepository: GoodsRepository
     @Autowired
     private lateinit var goodsService: GoodsService
-    val client = SearchClient(
-        KtorRestClient("127.0.0.1", 9200)
-    )
+    @Autowired
+    private lateinit var client: SearchClient
     @Test
     fun `创建索引`(){
         // 创建索引，会根据Item类的@Document注解信息来创建
@@ -105,9 +107,9 @@ class EsBaseTest() {
     }
     @Test
     fun `数据查询_SearchDSL_api_and`(){
-//        val q1 = "中国"
+        val q1 = "欢迎"
 //        val q2 = "起来"
-        val q1 = null
+//        val q1 = null
         val q2 = null
         runBlocking{
             val resp = client.search("goods") {
@@ -117,12 +119,12 @@ class EsBaseTest() {
                 query = bool {
                     q1?.let {
                         filter(
-                            term(Goods::remake, "${q1}")
+                            term(Goods::title, it)
                         )
                     }
                     q2?.let {
                         filter(
-                            term(Goods::remake, "${q2}")
+                            term(Goods::remake, it)
                         )
                     }
                 }
@@ -157,7 +159,7 @@ class EsBaseTest() {
                 query = bool {
                     q1?.let {
                         filter(
-                            term(Goods::remake, "${q1}")
+                            term(Goods::title, "${q1}")
                         )
                     }
                     q2?.let {
@@ -178,7 +180,7 @@ class EsBaseTest() {
     @Test
     fun `数据查询_SearchDSL_sevrices`(){
         runBlocking{
-            val gs =goodsService.search(Goods(title = "中国", remake = "人民"))
+            val gs =goodsService.search(Goods(title = "欢迎"))
             println(gs)
         }
     }

@@ -1,6 +1,5 @@
 package com.qp.esdemo
 
-import com.jillesvangurp.ktsearch.KtorRestClient
 import com.jillesvangurp.ktsearch.SearchClient
 import com.jillesvangurp.ktsearch.parseHits
 import com.jillesvangurp.ktsearch.search
@@ -45,25 +44,26 @@ class GoodsController(val goodsService: GoodsService) {
 }
 
 @Service
-class GoodsService {
-    val client = SearchClient(
-        KtorRestClient("127.0.0.1", 9200)
-    )
-
+class GoodsService(val client: SearchClient) {
     suspend fun search(goods: Goods): List<Goods>? {
-        val q1 = goods.title
         val resp = client.search("goods") {
-            from = 1
+            from = 0
             resultSize = 10
             trackTotalHits = "true"
             query = bool {
-                q1?.let {
+                goods.title?.let {
                     filter(
-                        term(Goods::remake, "${q1}")
+                        term(Goods::title, it)
+                    )
+                }
+                goods.remake?.let {
+                    filter(
+                        term(Goods::remake, it)
                     )
                 }
             }
         }
+        println(resp)
         return resp.parseHits<Goods>().map { it }
     }
 }

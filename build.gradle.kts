@@ -30,6 +30,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 	implementation("com.jillesvangurp:search-client:+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
+	implementation("com.github.xiaoymin:knife4j-openapi3-jakarta-spring-boot-starter:+")
 //	implementation("com.github.jillesvangurp.kt-search:+")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
