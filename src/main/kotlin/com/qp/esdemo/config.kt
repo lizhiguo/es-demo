@@ -10,7 +10,7 @@ class ElasticSearchClientConfig {
     @Bean
     fun searchClient(): SearchClient {
         return SearchClient(
-            KtorRestClient("127.0.0.1", 9200)
+            KtorRestClient()
         )
     }
 }

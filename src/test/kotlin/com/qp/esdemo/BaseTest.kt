@@ -7,6 +7,9 @@ import com.jillesvangurp.ktsearch.total
 import com.jillesvangurp.searchdsls.querydsl.bool
 import com.jillesvangurp.searchdsls.querydsl.match
 import com.jillesvangurp.searchdsls.querydsl.term
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +17,9 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
 
 @SpringBootTest
-class EsBaseTest() {
+class EsBaseTest {
+    @Autowired
+    private lateinit var personRepository: PersonRepository
     @Autowired
     private lateinit var elasticsearchTemplate: ElasticsearchTemplate
     @Autowired
@@ -180,8 +185,31 @@ class EsBaseTest() {
     @Test
     fun `数据查询_SearchDSL_sevrices`(){
         runBlocking{
+            val ps = personRepository.findAll()
+            println(ps)
             val gs =goodsService.search(Goods(title = "欢迎"))
             println(gs)
         }
     }
+    @Test
+    fun `数据查询_SearchDSL_sevrices2`(){
+        GlobalScope.launch {
+            delay(1000L) // 非阻塞的等待 1 秒钟（默认时间单位是毫秒）// 在后台启动一个新的协程并继续
+            val ps = personRepository.findAll()
+            println(ps)
+            val gs =goodsService.search(Goods(title = "欢迎"))
+            println(gs)
+        }
+        println("Hello,") // 协程已在等待时主线程还在继续
+        Thread.sleep(2000L) // 阻塞主线程 2 秒钟来保证 JVM 存活
+    }
+
+    @Test
+    fun `数据查询_SearchDSL_sevrices3`() = runBlocking{
+        val ps = personRepository.findAll()
+        println(ps)
+        val gs =goodsService.search(Goods(title = "欢迎"))
+        println(gs)
+    }
+
 }

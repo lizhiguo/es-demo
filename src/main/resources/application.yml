@@ -1,3 +1,12 @@
 spring:
   elasticsearch:
     uris: http://localhost:9200
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: admin
+    url: jdbc:mysql://192.168.10.215:3306/demo3?characterEncoding=utf8&useSSL=false
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: true
+    generate-ddl: true

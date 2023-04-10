@@ -28,7 +28,7 @@ data class Goods(
     val remake: String? = null,
     @Field(index=false, type = FieldType.Keyword)
     val images: String? = null
-)
+):java.io.Serializable
 
 @Repository
 interface GoodsRepository : ElasticsearchRepository<Goods, Long> {
